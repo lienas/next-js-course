@@ -31,18 +31,44 @@ const DUMMY_EVENTS = [
     },
 ];
 
-export function getFeaturedEvents() {
-    return DUMMY_EVENTS.filter((event) => event.isFeatured);
+export const apiUrl = 'https://next-33b49-default-rtdb.europe-west1.firebasedatabase.app/events.json'
+
+export const transformData = (data) => {
+
+    const tranformedData = [];
+
+    for (const key in data) {
+        tranformedData.push({
+            id: key,
+            ...data[key]
+        })
+    }
+    ;
+
+    return tranformedData;
 }
 
-export function getAllEvents() {
-    return DUMMY_EVENTS;
+//REFACTOR to Firebase-API
+export async function getFeaturedEvents() {
+    const events = await getAllEvents();
+
+    return events.filter((event) => event.isFeatured);
 }
 
-export function getFilteredEvents(dateFilter) {
-    const { year, month } = dateFilter;
+export async function getAllEvents() {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
 
-    let filteredEvents = DUMMY_EVENTS.filter((event) => {
+    const events = transformData(data);
+
+    return events;
+}
+
+export async function getFilteredEvents(dateFilter) {
+    const {year, month} = dateFilter;
+    const events = await getAllEvents();
+
+    let filteredEvents = events.filter((event) => {
         const eventDate = new Date(event.date);
         return eventDate.getFullYear() === year && eventDate.getMonth() === month - 1;
     });
@@ -50,6 +76,7 @@ export function getFilteredEvents(dateFilter) {
     return filteredEvents;
 }
 
-export function getEventById(id) {
-    return DUMMY_EVENTS.find((event) => event.id === id);
+export async function getEventById(id) {
+    const events = await getAllEvents();
+    return events.find((event) => event.id === id);
 }
