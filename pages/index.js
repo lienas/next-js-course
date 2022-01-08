@@ -1,14 +1,16 @@
 import {getFeaturedEvents} from "../dummy-data";
 import EventList from "../components/events/EventList";
-import events from "./events";
+import Head from "next/head";
 
 export default function Home(props) {
     //const featuredEvents = getFeaturedEvents()
     return (
         <div>
-            <ul>
-                <EventList items={props.featuredEvents}/>
-            </ul>
+            <Head>
+                <title>NextJS Events</title>
+                <meta name="description" content="Find events for everything and everybody"/>
+            </Head>
+            <EventList items={props.featuredEvents}/>
         </div>
     )
 }

@@ -5,6 +5,7 @@ import EventSummary from "../../components/event-detail/event-summary";
 import EventLogistics from "../../components/event-detail/event-logistics";
 import EventContent from "../../components/event-detail/event-content";
 import ErrorAlert from "../../components/ui/error-alert";
+import Head from "next/head";
 
 function EventDetailPage(props) {
     const router = useRouter();
@@ -22,6 +23,9 @@ function EventDetailPage(props) {
 
     return (
         <Fragment>
+            <Head>
+                <title>{event.title}</title>
+            </Head>
             <EventSummary title={event.title}/>
             <EventLogistics
                 date={event.date}

@@ -1,12 +1,13 @@
 import {useRouter} from "next/router";
 
-import {apiUrl, getEventById, getFilteredEvents, transformData} from "../../dummy-data";
+import {apiUrl, transformData} from "../../dummy-data";
 import EventList from "../../components/events/EventList";
 import ResultsTitle from "../../components/events/results-title";
 import Button from "../../components/ui/button";
 import ErrorAlert from "../../components/ui/error-alert";
 import useSWR from 'swr';
 import {useEffect, useState} from "react";
+import Head from "next/head";
 
 function FiltersEventsPage(props) {
     const [allEvents, setAllEvents] = useState();
@@ -18,10 +19,17 @@ function FiltersEventsPage(props) {
 
     useEffect(() => {
         if (data) {
-            console.log('Data::' + JSON.stringify(data,null,2));
+            console.log('Data::' + JSON.stringify(data, null, 2));
             setAllEvents(transformData(data));
         }
     }, [data])
+
+
+    let pageHeaderData = (
+        <Head>
+            <title>{`All Events for a specific date`}</title>
+        </Head>
+    )
 
     if (!allEvents) {
         return <p className='center'>Loading ... </p>
@@ -33,7 +41,12 @@ function FiltersEventsPage(props) {
     const numYear = +filteredYear;
     const numMonth = +filteredMonth;
 
-    if ( isNaN(numYear) ||
+    pageHeaderData = (
+        <Head>
+            <title>{`All Events for ${numMonth}-${numYear}`}</title>
+        </Head>)
+
+    if (isNaN(numYear) ||
         isNaN(numMonth) ||
         numYear > 2030 ||
         numYear < 2021 ||
@@ -42,6 +55,7 @@ function FiltersEventsPage(props) {
         error) {
         return (
             <>
+                {pageHeaderData}
                 <ErrorAlert>
                     <p>invalid Filter !!!!</p>
                 </ErrorAlert>
@@ -76,6 +90,9 @@ function FiltersEventsPage(props) {
 
     return (
         <>
+            <Head>
+                <title>{`All Events for ${numMonth}-${numYear}`}</title>
+            </Head>
             <ResultsTitle date={date}/>
             <EventList items={filteredEvents}/>
         </>
